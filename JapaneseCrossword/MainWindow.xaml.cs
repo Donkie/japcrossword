@@ -23,15 +23,15 @@ namespace JapaneseCrossword
         public MainWindow()
         {
 	        InitializeComponent();
-	        _dlg = new OpenFileDialog
+	        dlg = new OpenFileDialog
 	        {
 		        DefaultExt = ".png",
 		        Filter = "All Files|*.*|PNG files|*.png|JPEG files|*.jpeg|JPG files|*.jpg"
 	        };
         }
 
-        Bitmap _curimg;
-        Bitmap _curimgScaled;
+        Bitmap curimg;
+        Bitmap curimgScaled;
 
         int padT = 0;
         int padR = 0;
@@ -40,31 +40,31 @@ namespace JapaneseCrossword
 
         private void UpdateSizeText()
         {
-            InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", _curimg.Width, _curimg.Height);
-            ScaledSizeLabel.Content = string.Format("Scaled Size: {0}x{1}", _curimgScaled.Width, _curimgScaled.Height);
+            InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", curimg.Width, curimg.Height);
+            ScaledSizeLabel.Content = string.Format("Scaled Size: {0}x{1}", curimgScaled.Width, curimgScaled.Height);
         }
 
 	    const int RECT_SIZE = 20;
 
         private void ScaleCurImage()
         {
-            if (_curimg == null)
+            if (curimg == null)
                 return;
 
             var scale = ScaleSlider.Value;
             var maxScale = 1.2d;
             
-            if (_curimg.Width > 200 || _curimg.Height > 200) // I don't think anyone would want to solve a bigger crossword than this
+            if (curimg.Width > 200 || curimg.Height > 200) // I don't think anyone would want to solve a bigger crossword than this
             {
-                maxScale = Math.Min(maxScale, 200d / (double)_curimg.Width);
-                maxScale = Math.Min(maxScale, 200d / (double)_curimg.Height);
+                maxScale = Math.Min(maxScale, 200d / (double)curimg.Width);
+                maxScale = Math.Min(maxScale, 200d / (double)curimg.Height);
             }
             scale = Math.Min(scale,maxScale);
             ScaleSlider.Maximum = maxScale;
             ScaleSlider.Value = scale;
 
-            var neww = (int)Math.Round(_curimg.Width * scale);
-            var newh = (int)Math.Round(_curimg.Height * scale);
+            var neww = (int)Math.Round(curimg.Width * scale);
+            var newh = (int)Math.Round(curimg.Height * scale);
 
             if(ClampCheckbox.IsChecked != null && ClampCheckbox.IsChecked.Value)
             {
@@ -75,22 +75,22 @@ namespace JapaneseCrossword
             neww = Math.Max(neww, 5);
             newh = Math.Max(newh, 5);
 
-            _curimgScaled = ImageUtilities.ResizeImage(_curimg, neww, newh);
+            curimgScaled = ImageUtilities.ResizeImage(curimg, neww, newh);
 
             UpdateSizeText();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-	        var result = _dlg.ShowDialog();
+	        var result = dlg.ShowDialog();
 
 	        if (result != true) return;
-	        var filename = _dlg.FileName;
+	        var filename = dlg.FileName;
 	        FilepathTextBox.Text = filename;
 
 	        try
 	        {
-		        _curimg = (Bitmap)Image.FromFile(filename);
+		        curimg = (Bitmap)Image.FromFile(filename);
 	        }
 	        catch
 	        {
@@ -125,32 +125,32 @@ namespace JapaneseCrossword
 	        return yiq >= ContrastSlider.Value;
         }
 
-        bool[,] _clrArray;
-	    private readonly OpenFileDialog _dlg;
+        bool[,] clrArray;
+	    private readonly OpenFileDialog dlg;
 
 	    private void UpdatePreview()
         {
-            if (_curimgScaled == null)
+            if (curimgScaled == null)
                 return;
 
-            var bmp = new Bitmap((_curimgScaled.Width - (padL + padR)) * RECT_SIZE, (_curimgScaled.Height - (padT + padB)) * RECT_SIZE);
+            var bmp = new Bitmap((curimgScaled.Width - (padL + padR)) * RECT_SIZE, (curimgScaled.Height - (padT + padB)) * RECT_SIZE);
             var g = Graphics.FromImage(bmp);
 
-            var rects = new RectangleF[_curimgScaled.Width * _curimgScaled.Height];
-            _clrArray = new bool[(_curimgScaled.Width - (padL + padR)), (_curimgScaled.Height - (padT + padB))];
+            var rects = new RectangleF[curimgScaled.Width * curimgScaled.Height];
+            clrArray = new bool[(curimgScaled.Width - (padL + padR)), (curimgScaled.Height - (padT + padB))];
 
-            for (var y = padT; y < _curimgScaled.Height-padB; y++)
+            for (var y = padT; y < curimgScaled.Height-padB; y++)
             {
-                for (var x = padL; x < _curimgScaled.Width-padR; x++)
+                for (var x = padL; x < curimgScaled.Width-padR; x++)
                 {
-                    if (GetBwColor(_curimgScaled.GetPixel(x, y)))
+                    if (GetBwColor(curimgScaled.GetPixel(x, y)))
                     {
-                        rects[y * _curimgScaled.Width + x] = new RectangleF((x-padL) * RECT_SIZE, (y-padT) * RECT_SIZE, RECT_SIZE, RECT_SIZE);
-                        _clrArray[x-padL, y-padT] = true;
+                        rects[y * curimgScaled.Width + x] = new RectangleF((x-padL) * RECT_SIZE, (y-padT) * RECT_SIZE, RECT_SIZE, RECT_SIZE);
+                        clrArray[x-padL, y-padT] = true;
                     }
                     else
                     {
-                        _clrArray[x-padL, y-padT] = false;
+                        clrArray[x-padL, y-padT] = false;
                     }
                 }
             }
@@ -185,14 +185,14 @@ namespace JapaneseCrossword
 
         private void Button_Generate_Click(object sender, RoutedEventArgs e)
         {
-            if (_clrArray == null)
+            if (clrArray == null)
                 UpdatePreview();
 
-            if (_clrArray == null)
+            if (clrArray == null)
                 return;
 
-            var w = _clrArray.GetLength(0);
-            var h = _clrArray.GetLength(1);
+            var w = clrArray.GetLength(0);
+            var h = clrArray.GetLength(1);
 
             var columns = new int[w][];
             var rows    = new int[h][];
@@ -208,7 +208,7 @@ namespace JapaneseCrossword
             {
                 for(var y = h-1; y > 0; y--)
                 {
-                    var isBlack = _clrArray[x, y];
+                    var isBlack = clrArray[x, y];
 
                     if(isBlack)
                     {
@@ -239,7 +239,7 @@ namespace JapaneseCrossword
             {
                 for (var x = w-1; x > 0; x--)
                 {
-                    var isBlack = _clrArray[x, y];
+                    var isBlack = clrArray[x, y];
 
                     if (isBlack)
                     {
