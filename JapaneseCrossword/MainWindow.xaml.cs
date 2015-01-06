@@ -29,23 +29,22 @@ namespace JapaneseCrossword
 	        };
         }
 
-	    const int RECT_SIZE = 20;
-
         Bitmap _curimg;
         Bitmap _curimgScaled;
+        private void UpdateSizeText()
+        {
+            InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", _curimg.Width, _curimg.Height);
+            ScaledSizeLabel.Content = string.Format("Scaled Size: {0}x{1}", _curimgScaled.Width, _curimgScaled.Height);
+        }
+
+	    const int RECT_SIZE = 20;
+
         private void ScaleCurImage()
         {
             if (_curimg == null)
                 return;
 
             var scale = ScaleSlider.Value;
-            if (Math.Abs(scale - 1) < 0f)
-            {
-                _curimgScaled = _curimg;
-                InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", _curimg.Width, _curimg.Height);
-                ScaledSizeLabel.Content = string.Format("Scaled Size: {0}x{1}", _curimg.Width, _curimg.Height);
-                return;
-            }
             var neww = (int)Math.Round(_curimg.Width * scale);
             var newh = (int)Math.Round(_curimg.Height * scale);
 
@@ -58,10 +57,9 @@ namespace JapaneseCrossword
             neww = Math.Max(neww, 5);
             newh = Math.Max(newh, 5);
 
-            InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", _curimg.Width, _curimg.Height);
-            ScaledSizeLabel.Content = string.Format("Scaled Size: {0}x{1}", neww, newh);
-
             _curimgScaled = ImageUtilities.ResizeImage(_curimg, neww, newh);
+
+            UpdateSizeText();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
