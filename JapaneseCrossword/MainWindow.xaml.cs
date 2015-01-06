@@ -11,6 +11,7 @@ using Microsoft.Win32;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
+using System.Globalization;
 
 namespace JapaneseCrossword
 {
@@ -31,6 +32,12 @@ namespace JapaneseCrossword
 
         Bitmap _curimg;
         Bitmap _curimgScaled;
+
+        int padT = 0;
+        int padR = 0;
+        int padB = 0;
+        int padL = 0;
+
         private void UpdateSizeText()
         {
             InputSizeLabel.Content = string.Format("Input Size: {0}x{1}", _curimg.Width, _curimg.Height);
@@ -45,6 +52,17 @@ namespace JapaneseCrossword
                 return;
 
             var scale = ScaleSlider.Value;
+            var maxScale = 1.2d;
+            
+            if (_curimg.Width > 200 || _curimg.Height > 200) // I don't think anyone would want to solve a bigger crossword than this
+            {
+                maxScale = Math.Min(maxScale, 200d / (double)_curimg.Width);
+                maxScale = Math.Min(maxScale, 200d / (double)_curimg.Height);
+            }
+            scale = Math.Min(scale,maxScale);
+            ScaleSlider.Maximum = maxScale;
+            ScaleSlider.Value = scale;
+
             var neww = (int)Math.Round(_curimg.Width * scale);
             var newh = (int)Math.Round(_curimg.Height * scale);
 
@@ -115,23 +133,24 @@ namespace JapaneseCrossword
             if (_curimgScaled == null)
                 return;
 
-            var bmp = new Bitmap(_curimgScaled.Width * RECT_SIZE, _curimgScaled.Height * RECT_SIZE);
+            var bmp = new Bitmap((_curimgScaled.Width - (padL + padR)) * RECT_SIZE, (_curimgScaled.Height - (padT + padB)) * RECT_SIZE);
             var g = Graphics.FromImage(bmp);
 
             var rects = new RectangleF[_curimgScaled.Width * _curimgScaled.Height];
-            _clrArray = new bool[_curimgScaled.Width, _curimgScaled.Height];
-            for (var y = 0; y < _curimgScaled.Height; y++)
+            _clrArray = new bool[(_curimgScaled.Width - (padL + padR)), (_curimgScaled.Height - (padT + padB))];
+
+            for (var y = padT; y < _curimgScaled.Height-padB; y++)
             {
-                for (var x = 0; x < _curimgScaled.Width; x++)
+                for (var x = padL; x < _curimgScaled.Width-padR; x++)
                 {
                     if (GetBwColor(_curimgScaled.GetPixel(x, y)))
                     {
-                        rects[y * _curimgScaled.Width + x] = new RectangleF(x * RECT_SIZE, y * RECT_SIZE, RECT_SIZE, RECT_SIZE);
-                        _clrArray[x, y] = true;
+                        rects[y * _curimgScaled.Width + x] = new RectangleF((x-padL) * RECT_SIZE, (y-padT) * RECT_SIZE, RECT_SIZE, RECT_SIZE);
+                        _clrArray[x-padL, y-padT] = true;
                     }
                     else
                     {
-                        _clrArray[x, y] = false;
+                        _clrArray[x-padL, y-padT] = false;
                     }
                 }
             }
@@ -246,11 +265,11 @@ namespace JapaneseCrossword
                 }
             }
 
-            var imgW = _curimgScaled.Width * RECT_SIZE + longestrow * RECT_SIZE;
-            var imgH = _curimgScaled.Height * RECT_SIZE + longestcol * RECT_SIZE;
+            var imgW = w * RECT_SIZE + longestrow * RECT_SIZE;
+            var imgH = h * RECT_SIZE + longestcol * RECT_SIZE;
 	        var viewer = new OutputViewer();
 	        var ms = new MemoryStream();
-	        using (var bmp = new Bitmap(imgW, imgH))
+            using (var bmp = new Bitmap(imgW, imgH))
 	        {
 		        using (var g = Graphics.FromImage(bmp))
 		        {
@@ -320,5 +339,20 @@ namespace JapaneseCrossword
 			viewer.Show();
         }
 
+        private int StringToInt(string str)
+        {
+            int output = 0;
+            int.TryParse(str, NumberStyles.None, NumberFormatInfo.CurrentInfo, out output); // Numberstyle is used to prevent negative numbers
+            return output;
+        }
+
+        private void Padding_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            padT = StringToInt(TextBoxPaddingTop.Text);
+            padR = StringToInt(TextBoxPaddingRight.Text);
+            padB = StringToInt(TextBoxPaddingBottom.Text);
+            padL = StringToInt(TextBoxPaddingLeft.Text);
+            UpdatePreview();
+        }
     }
 }

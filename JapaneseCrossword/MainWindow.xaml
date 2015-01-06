@@ -1,7 +1,7 @@
 ﻿<Window x:Class="JapaneseCrossword.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Japanese Crossword Generator" MinWidth="281" MinHeight="441" Width="281" Height="441">
+        Title="Japanese Crossword Generator" MinWidth="281" MinHeight="441" Width="230" Height="425">
     <Grid>
         <DockPanel Margin="0,0,0,0" Width="Auto" Height="Auto">
             <DockPanel Height="35" VerticalAlignment="Top" DockPanel.Dock="Top">
@@ -33,8 +33,15 @@
                 <Slider x:Name="ContrastSlider" DockPanel.Dock="Right" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ValueChanged="sldr_ValueChanged" Margin="5,4,0,3" Maximum="255" Value="128"/>
             </DockPanel>
             <DockPanel Height="27" VerticalAlignment="Top" DockPanel.Dock="Top">
-                <CheckBox x:Name="FlipCheckbox" Content="Flip Colors" VerticalAlignment="Top" Unchecked="CheckBox_Flip_Checked" Checked="CheckBox_Flip_Checked" Margin="0,5"/>
+                <CheckBox x:Name="FlipCheckbox" Content="Flip Colors" VerticalAlignment="Top" Unchecked="CheckBox_Flip_Checked" Checked="CheckBox_Flip_Checked" Margin="5,5,0,5"/>
                 <CheckBox x:Name="ClampCheckbox" Content="Clamp size to multiples of 5" VerticalAlignment="Top" Checked="CheckBox_Clamp_Checked" Unchecked="CheckBox_Clamp_Checked" Margin="10,5,0,5"/>
+            </DockPanel>
+            <DockPanel Height="30" VerticalAlignment="Top" DockPanel.Dock="Top" LastChildFill="True">
+                <TextBox x:Name="TextBoxPaddingLeft" VerticalAlignment="Center" DockPanel.Dock="Right" Width="50" TextChanged="Padding_TextChanged" Margin="0,0,5,0" ToolTip="Left"/>
+                <TextBox x:Name="TextBoxPaddingBottom" VerticalAlignment="Center" DockPanel.Dock="Right" Width="50" TextChanged="Padding_TextChanged" Margin="0,0,2,0" ToolTip="Bottom"/>
+                <TextBox x:Name="TextBoxPaddingRight" VerticalAlignment="Center" DockPanel.Dock="Right" Width="50" TextChanged="Padding_TextChanged" Margin="0,0,2,0" ToolTip="Right"/>
+                <TextBox x:Name="TextBoxPaddingTop" VerticalAlignment="Center" DockPanel.Dock="Right" Width="50" TextChanged="Padding_TextChanged" Margin="0,0,2,0" ToolTip="Top"/>
+                <Label Content="Padding" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" DockPanel.Dock="Left"/>
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom">
                 <DockPanel Height="35" VerticalAlignment="Top" DockPanel.Dock="Top" LastChildFill="False">
