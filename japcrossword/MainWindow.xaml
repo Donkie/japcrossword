@@ -1,12 +1,12 @@
 ﻿<Window x:Class="sodukobilder.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Japanese Crossword Generator" Width="311" Height="429">
+        Title="Japanese Crossword Generator" MinWidth="281" MinHeight="441" Width="281" Height="441">
     <Grid>
         <DockPanel Margin="0,0,0,0" Width="Auto" Height="Auto">
             <DockPanel Height="35" VerticalAlignment="Top" DockPanel.Dock="Top">
                 <Button Content="Browse" DockPanel.Dock="Left" Width="75" Click="Button_Click" Margin="5"/>
-                <TextBox x:Name="txtbx_filepath" DockPanel.Dock="Right" Text="TextBox" VerticalAlignment="Top" Height="25" Margin="0,5,5,0"/>
+                <TextBox x:Name="txtbx_filepath" DockPanel.Dock="Right" Text="" VerticalAlignment="Top" Height="25" Margin="0,5,5,0"/>
             </DockPanel>
             <DockPanel Height="30" VerticalAlignment="Top" DockPanel.Dock="Top">
                 <Label Content="Scale" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" DockPanel.Dock="Left"/>
@@ -36,7 +36,13 @@
                 <CheckBox x:Name="chkbx_flip" Content="Flip Colors" VerticalAlignment="Top" Unchecked="CheckBox_Flip_Checked" Checked="CheckBox_Flip_Checked" Margin="0,5"/>
                 <CheckBox x:Name="chkbx_clamp" Content="Clamp size to multiples of 5" VerticalAlignment="Top" Checked="CheckBox_Clamp_Checked" Unchecked="CheckBox_Clamp_Checked" Margin="10,5,0,5"/>
             </DockPanel>
-            <Image x:Name="img_preview" Margin="10,0" DockPanel.Dock="Bottom"/>
+            <DockPanel DockPanel.Dock="Bottom">
+                <DockPanel Height="35" VerticalAlignment="Top" DockPanel.Dock="Top" LastChildFill="False">
+                    <Label Content="Preview" VerticalAlignment="Center" Height="24" DockPanel.Dock="Left"/>
+                    <Button Content="Generate" DockPanel.Dock="Right" Width="75" Click="Button_Generate_Click" Margin="5"/>
+                </DockPanel>
+                <Image x:Name="img_preview"/>
+            </DockPanel>
         </DockPanel>
 
     </Grid>
