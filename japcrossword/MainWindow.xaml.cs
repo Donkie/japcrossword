@@ -112,7 +112,7 @@ namespace sodukobilder
         private bool GetBWColorBool(Color inputclr)
         {
             if (inputclr.A == 0)
-                return false;
+                return chkbx_flip.IsChecked.Value;
 
             double yiq = (((double)inputclr.R * sldr_red.Value) + ((double)inputclr.G * sldr_green.Value) + ((double)inputclr.B * sldr_blue.Value)) / (sldr_red.Value + sldr_green.Value + sldr_blue.Value);
             if(chkbx_flip.IsChecked.Value)
