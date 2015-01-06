@@ -85,9 +85,6 @@ namespace JapaneseCrossword
 	        UpdatePreview();
         }
 
-/*
-        private static Action _emptyDelegate = delegate { };
-*/
         private void SetPreviewBitmap(Bitmap bmp)
         {
             var ms = new MemoryStream();
@@ -101,15 +98,7 @@ namespace JapaneseCrossword
             PreviewImage.Source = bi;
         }
 
-/*
-        private Color GetBwColor(Color inputclr)
-        {
-            var yiq = ((inputclr.R * sldr_red.Value) + (inputclr.G * sldr_green.Value) + (inputclr.B * sldr_blue.Value)) / (sldr_red.Value + sldr_green.Value + sldr_blue.Value);
-            return yiq >= 128 ? Color.Black : Color.LightGray;
-        }
-*/
-
-        private bool GetBwColorBool(Color inputclr)
+        private bool GetBwColor(Color inputclr)
         {
             if (inputclr.A == 0)
                 return FlipCheckbox.IsChecked != null && !FlipCheckbox.IsChecked.Value;
@@ -137,7 +126,7 @@ namespace JapaneseCrossword
             {
                 for (var x = 0; x < _curimgScaled.Width; x++)
                 {
-                    if (GetBwColorBool(_curimgScaled.GetPixel(x, y)))
+                    if (GetBwColor(_curimgScaled.GetPixel(x, y)))
                     {
                         rects[y * _curimgScaled.Width + x] = new RectangleF(x * RECT_SIZE, y * RECT_SIZE, RECT_SIZE, RECT_SIZE);
                         _clrArray[x, y] = true;
@@ -176,16 +165,6 @@ namespace JapaneseCrossword
             ScaleCurImage();
             UpdatePreview();
         }
-
-/*
-        private int[] PopFill(Stack<int> stack)
-        {
-            var arr = new int[stack.Count];
-            for (var i = 0; i < arr.Length; i++)
-                arr[i] = stack.Pop();
-            return arr;
-        }
-*/
 
         private void Button_Generate_Click(object sender, RoutedEventArgs e)
         {
