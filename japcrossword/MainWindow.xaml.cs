@@ -29,6 +29,8 @@ namespace sodukobilder
             watch = new Stopwatch();
         }
 
+        const int RectSize = 5;
+
         Bitmap curimg;
         Bitmap curimg_scaled;
         private void ScaleCurImage()
@@ -46,6 +48,12 @@ namespace sodukobilder
             }
             int neww = (int)Math.Round((double)curimg.Width * scale);
             int newh = (int)Math.Round((double)curimg.Height * scale);
+
+            if(chkbx_clamp.IsChecked.Value)
+            {
+                neww = ((int)Math.Round((double)neww / 5d)) * 5;
+                newh = ((int)Math.Round((double)newh / 5d)) * 5;
+            }
 
             neww = Math.Max(neww, 5);
             newh = Math.Max(newh, 5);
@@ -118,7 +126,7 @@ namespace sodukobilder
             if (curimg_scaled == null)
                 return;
 
-            Bitmap bmp = new Bitmap(curimg_scaled.Width * 5, curimg_scaled.Height * 5);
+            Bitmap bmp = new Bitmap(curimg_scaled.Width * RectSize, curimg_scaled.Height * RectSize);
             Graphics g = Graphics.FromImage(bmp);
 
             RectangleF[] rects = new RectangleF[curimg_scaled.Width * curimg_scaled.Height];
@@ -128,7 +136,7 @@ namespace sodukobilder
                 {
                     if (GetBWColorBool(curimg_scaled.GetPixel(x, y)))
                     {
-                        rects[y * curimg_scaled.Width + x] = new RectangleF(x * 5, y * 5, 5, 5);
+                        rects[y * curimg_scaled.Width + x] = new RectangleF(x * RectSize, y * RectSize, RectSize, RectSize);
                     }
                 }
             }
