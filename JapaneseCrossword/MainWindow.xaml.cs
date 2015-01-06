@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
 
 namespace JapaneseCrossword
 {
@@ -272,6 +277,9 @@ namespace JapaneseCrossword
 	        {
 		        using (var g = Graphics.FromImage(bmp))
 		        {
+					g.Clear(Color.White);
+					g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
 			        using (Pen p = new Pen(Color.DarkGray), pfat = new Pen(Color.Black))
 			        {
 				        var z = 0;
@@ -301,7 +309,9 @@ namespace JapaneseCrossword
 						        var y = longestcol * RECT_SIZE - RECT_SIZE;
 						        for(var j = 0; j < columns[i].Length; j++)
 						        {
-							        g.DrawString(columns[i][j].ToString(), f, b, x+2, y+2);
+							        var s = columns[i][j].ToString();
+							        var tsize = g.MeasureString(s, f);
+							        g.DrawString(s, f, b, x+(RECT_SIZE/2)-(tsize.Width/2), y+(RECT_SIZE / 2) - (tsize.Height / 2));
 							        y -= RECT_SIZE;
 						        }
 					        }
@@ -311,7 +321,9 @@ namespace JapaneseCrossword
 						        var y = (longestcol * RECT_SIZE) + i * RECT_SIZE;
 						        for (var j = 0; j < rows[i].Length; j++)
 						        {
-							        g.DrawString(rows[i][j].ToString(), f, b, x + 2, y + 2);
+							        var s = rows[i][j].ToString();
+							        var tsize = g.MeasureString(s, f);
+							        g.DrawString(s, f, b, x + (RECT_SIZE / 2) - (tsize.Width / 2), y + (RECT_SIZE / 2) - (tsize.Height / 2));
 							        x -= RECT_SIZE;
 						        }
 					        }
@@ -327,7 +339,7 @@ namespace JapaneseCrossword
             bi.BeginInit();
             bi.StreamSource = ms;
             bi.EndInit();
-            viewer.img.Source = bi;
+            viewer.PreviewImage.Source = bi;
 			viewer.Show();
         }
 

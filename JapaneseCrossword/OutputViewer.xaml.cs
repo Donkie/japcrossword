@@ -23,7 +23,7 @@ namespace JapaneseCrossword
 		    var res = _dlg.ShowDialog();
 		    if (res != true) return;
 		    var filename = _dlg.FileName;
-		    var imgsrc = (BitmapSource)img.Source;
+		    var imgsrc = (BitmapSource)PreviewImage.Source;
                 
 		    using(var fs = new FileStream(filename, FileMode.Create))
 		    {
