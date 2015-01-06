@@ -1,4 +1,4 @@
-﻿<Window x:Class="japcrossword.OutputViewer"
+﻿<Window x:Class="JapaneseCrossword.OutputViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="OutputViewer" Height="677" Width="1027">

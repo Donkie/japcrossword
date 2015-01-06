@@ -7,7 +7,7 @@
     <ProjectGuid>{3C7F8691-49A8-4AFF-BACB-2F93067AFB99}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>japcrossword</RootNamespace>
+    <RootNamespace>JapaneseCrossword</RootNamespace>
     <AssemblyName>japcrossword</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
